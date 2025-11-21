@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "143193442336",
+    "project_id": "semana12toledo",
+    "storage_bucket": "semana12toledo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143193442336:android:37675661425de6ad489445",
+        "android_client_info": {
+          "package_name": "com.toledo.mi_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOG3ZWzawZNfiE70s9YLPg0ct4WndLX3o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
