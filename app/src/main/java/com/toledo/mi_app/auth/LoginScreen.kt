@@ -73,7 +73,7 @@ fun LoginScreen(
         ) {
             // IMAGEN Tecsup
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background), // Reemplaza R.drawable.tecsup con el recurso real si es necesario
+                painter = painterResource(id = R.drawable.logo_tec), // Reemplaza R.drawable.tecsup con el recurso real si es necesario
                 contentDescription = "Logo Tecsup",
                 modifier = Modifier
                     .size(120.dp) // Ajusta el tamaño si quieres más grande o más pequeño
