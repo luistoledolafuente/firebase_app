@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions // Importante
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -24,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType // Importante
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview // Importación necesaria para el Preview
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
-import com.toledo.mi_app.R // Asegúrate de que este import sea correcto para tu proyecto
-
+import com.toledo.mi_app.R
 
 @Composable
 fun LoginScreen(
@@ -54,7 +55,7 @@ fun LoginScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 24.dp)
-                .fillMaxWidth(), // Añadido para que el texto se centre correctamente
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -71,12 +72,12 @@ fun LoginScreen(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // IMAGEN Tecsup
+            // IMAGEN Tecsup (Asegúrate que R.drawable.logo_tec exista, sino comenta esta parte)
             Image(
-                painter = painterResource(id = R.drawable.logo_tec), // Reemplaza R.drawable.tecsup con el recurso real si es necesario
+                painter = painterResource(id = R.drawable.logo_tec),
                 contentDescription = "Logo Tecsup",
                 modifier = Modifier
-                    .size(120.dp) // Ajusta el tamaño si quieres más grande o más pequeño
+                    .size(120.dp)
                     .align(Alignment.CenterHorizontally)
             )
 
@@ -94,6 +95,8 @@ fun LoginScreen(
                 onValueChange = { email = it },
                 label = { Text("Correo electrónico") },
                 singleLine = true,
+                // CORRECCIÓN 1: Teclado específico para Email (ayuda al usuario)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -105,6 +108,7 @@ fun LoginScreen(
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -112,23 +116,25 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    if (email.isBlank() || password.isBlank()) {
-                        // En el preview, esta línea no hará nada ya que no hay contexto de Android real.
-                        // Solo se evalúa en la ejecución normal de la app.
+                    // CORRECCIÓN 2: .trim() elimina espacios accidentales al inicio o final
+                    val cleanEmail = email.trim()
+                    val cleanPassword = password.trim()
+
+                    if (cleanEmail.isBlank() || cleanPassword.isBlank()) {
                         Toast.makeText(context, "Complete todos los campos", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
 
-                    isLoading = true // Iniciar carga
+                    isLoading = true
 
-                    // Esta lógica de Firebase no se ejecutará correctamente en el Preview.
-                    auth.signInWithEmailAndPassword(email, password)
+                    auth.signInWithEmailAndPassword(cleanEmail, cleanPassword)
                         .addOnCompleteListener { task ->
-                            isLoading = false // Finalizar carga
+                            isLoading = false
                             if (task.isSuccessful) {
                                 Toast.makeText(context, "Inicio exitoso ✅", Toast.LENGTH_SHORT).show()
                                 onLoginSuccess()
                             } else {
+                                // Muestra el error exacto de Firebase
                                 Toast.makeText(
                                     context,
                                     "Error: ${task.exception?.message}",
@@ -137,7 +143,7 @@ fun LoginScreen(
                             }
                         }
                 },
-                enabled = !isLoading, // Deshabilitar el botón durante la carga
+                enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (isLoading) "Cargando.." else "Ingresar")
@@ -150,10 +156,9 @@ fun LoginScreen(
             }
         }
 
-
         // ------------------ PIE DE PÁGINA ------------------
         Text(
-            text = "Juan León S. - Tecsup",
+            text = "Luis Miguel T. - Tecsup",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -161,19 +166,4 @@ fun LoginScreen(
             textAlign = TextAlign.Center
         )
     }
-}
-
-// ------------------ PREVIEW ------------------
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    // Es una buena práctica envolver el Preview con el tema de tu aplicación
-    // Si tienes un tema definido, descomenta o usa el nombre de tu tema.
-    // MiAppTheme {
-    LoginScreen(
-        onNavigateToRegister = { /* No-op para Preview */ },
-        onLoginSuccess = { /* No-op para Preview */ }
-    )
-    // }
 }

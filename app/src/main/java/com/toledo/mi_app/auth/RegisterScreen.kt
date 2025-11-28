@@ -1,4 +1,4 @@
-package com.toledo.mi_app.auth // Ajusta el nombre del paquete según tu proyecto
+package com.toledo.mi_app.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions // Importante
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,10 +22,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType // Importante
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
-// Asegúrate de que los imports de Jetpack Compose y Firebase estén completos
 
 @Composable
 fun RegisterScreen(
@@ -62,6 +63,7 @@ fun RegisterScreen(
                 onValueChange = { email = it },
                 label = { Text("Correo electrónico") },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), // CORRECCIÓN
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -74,6 +76,7 @@ fun RegisterScreen(
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -86,6 +89,7 @@ fun RegisterScreen(
                 label = { Text("Confirmar Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -94,20 +98,29 @@ fun RegisterScreen(
             // Botón de Registro
             Button(
                 onClick = {
-                    if (email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+                    // CORRECCIÓN: Limpiar espacios
+                    val cleanEmail = email.trim()
+                    val cleanPassword = password.trim()
+                    val cleanConfirm = confirmPassword.trim()
+
+                    if (cleanEmail.isBlank() || cleanPassword.isBlank() || cleanConfirm.isBlank()) {
                         Toast.makeText(context, "Complete todos los campos", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
-                    if (password != confirmPassword) {
+                    if (cleanPassword != cleanConfirm) {
                         Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_LONG).show()
                         return@Button
                     }
+                    if (cleanPassword.length < 6) {
+                        Toast.makeText(context, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
 
-                    isLoading = true // Iniciar carga
+                    isLoading = true
 
-                    auth.createUserWithEmailAndPassword(email, password)
+                    auth.createUserWithEmailAndPassword(cleanEmail, cleanPassword)
                         .addOnCompleteListener { task ->
-                            isLoading = false // Finalizar carga
+                            isLoading = false
                             if (task.isSuccessful) {
                                 Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
                                 onRegisterSuccess()
@@ -120,7 +133,7 @@ fun RegisterScreen(
                             }
                         }
                 },
-                enabled = !isLoading, // Deshabilitar el botón durante la carga
+                enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (isLoading) "Creando..." else "Registrarse")
