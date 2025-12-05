@@ -1,6 +1,5 @@
-package com.toledo.mi_app.auth
+package com.toledo.mi_app.ui.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -76,16 +75,11 @@ fun HomeScreen(
                         elevation = CardDefaults.cardElevation(4.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = producto.descripcion, style = MaterialTheme.typography.titleMedium)
-                            Text(text = "Código: ${producto.codigo}")
-                            Text(text = "Precio: S/. ${producto.precio} - Cant: ${producto.cantidad}")
-                            Text(
-                                text = if (producto.estado) "ACTIVO" else "INACTIVO",
-                                color = if (producto.estado) Color.Green else Color.Red
-                            )
+                            Text(text = producto.nombre, style = MaterialTheme.typography.titleMedium)
+                            Text(text = "Categoría: ${producto.categoria}", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = "Precio: S/. ${producto.precio} | Stock: ${producto.stock}")
 
-                            Row(modifier = Modifier.align(Alignment.End)) {
-                                IconButton(onClick = {
+                            Row(modifier = Modifier.align(Alignment.End)) {                                IconButton(onClick = {
                                     viewModel.prepararEdicion(producto)
                                     onEditProducto()
                                 }) {

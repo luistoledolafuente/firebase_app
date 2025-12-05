@@ -1,12 +1,14 @@
-package com.toledo.mi_app.auth
+package com.toledo.mi_app.ui
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.toledo.mi_app.ui.ProductoScreen
+import com.toledo.mi_app.ui.auth.LoginScreen
+import com.toledo.mi_app.ui.auth.RegisterScreen
+import com.toledo.mi_app.ui.home.HomeScreen
+import com.toledo.mi_app.ui.product.ProductoScreen
 import com.toledo.mi_app.viewmodel.ProductoViewModel
 
 // Definiciones de las pantallas (Destinos)
@@ -17,19 +19,18 @@ object Destinations {
     const val PRODUCTO_FORM = "producto_form"
 }
 
-// ------------------ FUNCIÓN PRINCIPAL DE LA APP ------------------
 @Composable
 fun AuthApp() {
     val navController = rememberNavController()
 
-    // Creamos el ViewModel aquí para que sobreviva a la navegación y se comparta entre Home y Formulario
+    // ViewModel compartido
     val productoViewModel: ProductoViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = Destinations.LOGIN
     ) {
-        // ------------------ 1. LOGIN ------------------
+
         composable(Destinations.LOGIN) {
             LoginScreen(
                 onNavigateToRegister = {
@@ -43,7 +44,6 @@ fun AuthApp() {
             )
         }
 
-        // ------------------ 2. REGISTRO ------------------
         composable(Destinations.REGISTER) {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -51,13 +51,10 @@ fun AuthApp() {
                         popUpTo(Destinations.LOGIN) { inclusive = true }
                     }
                 },
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
-        // ------------------ 3. HOME (LISTADO) ------------------
         composable(Destinations.HOME) {
             HomeScreen(
                 viewModel = productoViewModel,
@@ -75,7 +72,6 @@ fun AuthApp() {
             )
         }
 
-        // ------------------ 4. FORMULARIO DE PRODUCTO ------------------
         composable(Destinations.PRODUCTO_FORM) {
             ProductoScreen(
                 viewModel = productoViewModel,

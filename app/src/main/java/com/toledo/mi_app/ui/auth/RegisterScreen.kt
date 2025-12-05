@@ -1,4 +1,4 @@
-package com.toledo.mi_app.auth
+package com.toledo.mi_app.ui.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.google.firebase.FirebaseApp
-import com.toledo.mi_app.auth.AuthApp // Asume que AuthApp está en el subpaquete .auth
+import com.toledo.mi_app.ui.AuthApp // Asume que AuthApp está en el subpaquete .auth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
