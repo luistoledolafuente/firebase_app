@@ -11,7 +11,6 @@ import com.toledo.mi_app.ui.home.HomeScreen
 import com.toledo.mi_app.ui.product.ProductoScreen
 import com.toledo.mi_app.viewmodel.ProductoViewModel
 
-// Definiciones de las pantallas (Destinos)
 object Destinations {
     const val LOGIN = "login"
     const val REGISTER = "register"
@@ -22,28 +21,25 @@ object Destinations {
 @Composable
 fun AuthApp() {
     val navController = rememberNavController()
-
-    // ViewModel compartido
+    // Instanciamos el ViewModel aquí para que sobreviva a la navegación
     val productoViewModel: ProductoViewModel = viewModel()
 
-    NavHost(
-        navController = navController,
-        startDestination = Destinations.LOGIN
-    ) {
-
+    NavHost(navController = navController, startDestination = Destinations.LOGIN) {
+        // Pantalla Login
         composable(Destinations.LOGIN) {
             LoginScreen(
-                onNavigateToRegister = {
-                    navController.navigate(Destinations.REGISTER)
-                },
                 onLoginSuccess = {
                     navController.navigate(Destinations.HOME) {
                         popUpTo(Destinations.LOGIN) { inclusive = true }
                     }
+                },
+                onNavigateToRegister = {
+                    navController.navigate(Destinations.REGISTER)
                 }
             )
         }
 
+        // Pantalla Registro
         composable(Destinations.REGISTER) {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -51,10 +47,13 @@ fun AuthApp() {
                         popUpTo(Destinations.LOGIN) { inclusive = true }
                     }
                 },
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
 
+        // Pantalla Home
         composable(Destinations.HOME) {
             HomeScreen(
                 viewModel = productoViewModel,
@@ -63,15 +62,12 @@ fun AuthApp() {
                         popUpTo(Destinations.HOME) { inclusive = true }
                     }
                 },
-                onAddProducto = {
-                    navController.navigate(Destinations.PRODUCTO_FORM)
-                },
-                onEditProducto = {
-                    navController.navigate(Destinations.PRODUCTO_FORM)
-                }
+                onAddProducto = { navController.navigate(Destinations.PRODUCTO_FORM) },
+                onEditProducto = { navController.navigate(Destinations.PRODUCTO_FORM) }
             )
         }
 
+        // Pantalla Formulario Producto
         composable(Destinations.PRODUCTO_FORM) {
             ProductoScreen(
                 viewModel = productoViewModel,
